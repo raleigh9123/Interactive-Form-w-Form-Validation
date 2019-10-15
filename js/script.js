@@ -1,4 +1,5 @@
-//jQuery enabled javascript file
+//Basic Info Section
+//--- Place cursor in first text field on page load and add "other" job role to the form's inputs 
 
 //On page load, cursor appears in "Name" field
 $(document).ready(() => {
@@ -10,6 +11,7 @@ const jobRoleSelect = $('#title');
 const otherJobRole = $('#other-title');
 otherJobRole.hide();
 
+//If job role of "other" is selected, reveal "Other" input text field
 jobRoleSelect.change(() => {
     let jobRoleSelection = jobRoleSelect.find(':selected').attr('value');
     if(jobRoleSelection === 'other') {
@@ -20,46 +22,49 @@ jobRoleSelect.change(() => {
 })
 
 
-//Require design selection before color selection is made available, then refine available colors by selection
-const shirtColorField = $('#color');
-const JSPuns = $('option[value="js puns"]');
-const iHeartJS = $('option[value="heart js"]');
+//T-Shirt Info Section
+//---Require design selection before color selection is made available, then refine available colors by selection
 
-//Shirt Color option disabled on load
-shirtColorField.attr('disabled', true);
-
+//Disable and hide "Select Theme" from Design Options Select
 const designSelect = $('#design');
+designSelect.children()[0].setAttribute('disabled',true);
 designSelect.children().first().hide();
 
-
+//Shirt Color option disabled on load
+const shirtColorSelect = $('#color');
+shirtColorSelect.attr('disabled', true);
+//Add "Please Select T-Shirt" prompt in greyed out "Color" select
 const colorSelect = $('#color');
 colorSelect.prepend("<option>Please select T-shirt theme</option>");
 const colorInputs = colorSelect.children();
-colorInputs.eq(0).selected = true;
+colorInputs[0].selected = true;
 
+//Declare arrays to include indexes of shirt colors to correspond with design theme
 let JSPunsArray = [];
 let iHeartJSArray = [];
 
-
-
+//Categorize shirts and push array index into corresponding arrays
 colorInputs.each(function (index) {
     if ($(this).text().includes('JS Puns')) {
-        //push index to JS Puns Array
         JSPunsArray.push(index);
     } else if ($(this).text().includes('JS shirt')) {
-        //push index to iheartJS Array
         iHeartJSArray.push(index);
     }
 })
 
-//Allow color input when design theme is selected
+//Show corresponding color input when design theme is selected
 designSelect.change(() => {
+    //Find the selected design input and capture the attributes value
     let designSelection = designSelect.find(':selected').attr('value');
+    //When input is selected, use value above to toggle the shirt's visibility according to type determined in arrays listed above
     if (designSelection === 'js puns' || designSelection === 'heart js') {
-        shirtColorField.attr('disabled', false);
+        //Enable shirt color select
+        shirtColorSelect.attr('disabled', false);
+        //First hide all inputs
         colorInputs.each(function () {
             $(this).hide();
         })
+        //Then toggle each input that corresponds with the design theme type. e.g. 'js puns' shirt will enable shirts that have "JS Puns shirt only" in the text
         if (designSelection === 'js puns') {
             colorInputs.each(function (index) {
                 if (JSPunsArray.includes(index)) {
@@ -76,7 +81,10 @@ designSelect.change(() => {
             })
             colorInputs[iHeartJSArray[0]].selected = true;
         }
-    } else {
-        shirtColorField.attr('disabled', true);
-    }
+    } 
 });
+
+//Activities Section
+//---Overview of Activities
+
+//
