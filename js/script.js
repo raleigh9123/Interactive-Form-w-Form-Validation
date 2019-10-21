@@ -14,7 +14,7 @@ otherJobRole.hide();
 //If job role of "other" is selected, reveal "Other" input text field
 jobRoleSelect.change(() => {
     let jobRoleSelection = jobRoleSelect.find(':selected').attr('value');
-    if(jobRoleSelection === 'other') {
+    if (jobRoleSelection === 'other') {
         otherJobRole.toggle();
     } else {
         otherJobRole.hide();
@@ -27,7 +27,7 @@ jobRoleSelect.change(() => {
 
 //Disable and hide "Select Theme" from Design Options Select
 const designSelect = $('#design');
-designSelect.children()[0].setAttribute('disabled',true);
+designSelect.children()[0].setAttribute('disabled', true);
 designSelect.children().first().hide();
 
 //Shirt Color option disabled on load
@@ -81,10 +81,54 @@ designSelect.change(() => {
             })
             colorInputs[iHeartJSArray[0]].selected = true;
         }
-    } 
+    }
 });
 
 //Activities Section
-//---Overview of Activities
+//---Create a total cost element and append to DOM beneath input options. Then set initial activities cost to $0. On input change, add or subtract activity's cost and update total cost. On input change, prevent conflicting activities by comparing the day and time attributes given in each input.
 
-//
+//Create a total cost and append below all activity options
+const totalCost = document.createElement('h3');
+totalCost.textContent = 'Total Cost: $0'
+$('.activities').append(totalCost);
+
+//Set the initial activity cost to 0;
+let totalActivityCost = 0;
+
+//Event Handler for the Activities Section. On input check/de-check...
+$('.activities').change((e) => {
+    //Local variable for selected input
+    let clicked = e.target;
+
+    //Take the clicked input's data-cost value
+    let inputCost = clicked.dataset.cost;
+    //Remove the dollar sign by replacing $ with an empty string
+    inputCost = inputCost.replace('$', '');
+    //Take the string and run parseInt to convert to integer
+    inputCost = parseInt(inputCost, 10);
+    //If the input is checked, add its value to totalActivity Cost, otherwise subtract the value
+    if (clicked.checked) {
+        totalActivityCost += inputCost;
+    } else {
+        totalActivityCost -= inputCost;
+    };
+    //Change the text content of the total cost h3 tag added to DOM above
+    document.querySelector('.activities h3').textContent = `Total Cost: $${totalActivityCost}`;
+
+    //If item is selected with a given date, disable conflicting dates
+    //Define the clicked items day and time data- attribute
+    let clickedDate = e.target.dataset.dayAndTime;
+    //Variable to store all activities checkbox inputs
+    const checkboxes = document.querySelectorAll('.activities input');
+    //Loop compares the clicked input's day and time and compares with all other day and time inputs. If match, disable checkbox, otherwise enable checkbox.
+    for (i = 0; i < checkboxes.length; i++) {
+        let inputDate = checkboxes[i].dataset.dayAndTime;
+        if (clickedDate === inputDate && clicked !== checkboxes[i]) {
+            if (clicked.checked) {
+                checkboxes[i].disabled = true;
+            } else {
+                checkboxes[i].disabled = false;
+            }
+        }
+    }
+});
