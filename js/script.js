@@ -1,5 +1,5 @@
 //Basic Info Section
-//--- Place cursor in first text field on page load and add "other" job role to the form's inputs 
+//--- On page load, place cursor in first text field. Add "other" job role to the form's inputs and toggle the "other" text input box when selected
 
 //On page load, cursor appears in "Name" field
 $(document).ready(() => {
@@ -23,7 +23,7 @@ jobRoleSelect.change(() => {
 
 
 //T-Shirt Info Section
-//---Require design selection before color selection is made available, then refine available colors by selection
+//---Require design selection before color selection is made available, then refine available colors by input option user selected
 
 //Disable and hide "Select Theme" from Design Options Select
 const designSelect = $('#design');
@@ -37,6 +37,7 @@ shirtColorSelect.attr('disabled', true);
 const colorSelect = $('#color');
 colorSelect.prepend("<option>Please select T-shirt theme</option>");
 const colorInputs = colorSelect.children();
+//Set first input in Design list as selected by default (on load only);
 colorInputs[0].selected = true;
 
 //Declare arrays to include indexes of shirt colors to correspond with design theme
@@ -52,6 +53,10 @@ colorInputs.each(function (index) {
     }
 })
 
+//Hide the "Color" label and select menu until a T-Shirt design is selected from the "Design" menu.
+const colorField = $('#colors-js-puns');
+colorField.hide();
+
 //Show corresponding color input when design theme is selected
 designSelect.change(() => {
     //Find the selected design input and capture the attributes value
@@ -60,6 +65,7 @@ designSelect.change(() => {
     if (designSelection === 'js puns' || designSelection === 'heart js') {
         //Enable shirt color select
         shirtColorSelect.attr('disabled', false);
+        colorField.show();
         //First hide all inputs
         colorInputs.each(function () {
             $(this).hide();
@@ -122,8 +128,8 @@ $('.activities').change((e) => {
     const checkboxes = document.querySelectorAll('.activities input');
     //Loop compares the clicked input's day and time and compares with all other day and time inputs. If match, disable checkbox, otherwise enable checkbox.
     for (i = 0; i < checkboxes.length; i++) {
-        let inputDate = checkboxes[i].dataset.dayAndTime;
-        if (clickedDate === inputDate && clicked !== checkboxes[i]) {
+        let inputsDate = checkboxes[i].dataset.dayAndTime;
+        if (clickedDate === inputsDate && clicked !== checkboxes[i]) {
             if (clicked.checked) {
                 checkboxes[i].disabled = true;
             } else {
@@ -131,4 +137,38 @@ $('.activities').change((e) => {
             }
         }
     }
+});
+
+//Payment Info Section
+//---Hide "Select Payment Method" from payment options 'select' options. 
+
+//Display payment sections based on the payment option chosen in the select menu.
+const paymentInput = $('#payment');
+const paymentSelections = $('#payment option');
+//Disabled "Select Payment Method" from options list
+paymentInput.children().first().hide();
+//Make "Credit Card" the default selected payment method
+paymentSelections[1].selected = true;
+
+//Hide alternate payment paragraph details by default
+$('#paypal').hide();
+$('#bitcoin').hide();
+
+//Payment Method Input Change Event Handler
+paymentInput.change( (e) => {
+    let currentPaymentMethod = paymentInput.find(':selected').attr('value');
+    if(currentPaymentMethod === 'Credit Card') {
+        $('#credit-card').show();
+        $('#paypal').hide();
+        $('#bitcoin').hide();
+    } else if (currentPaymentMethod === 'PayPal') {
+        $('#credit-card').hide();
+        $('#paypal').show();
+        $('#bitcoin').hide();
+    } else if (currentPaymentMethod === 'Bitcoin') {
+        $('#credit-card').hide();
+        $('#paypal').hide();
+        $('#bitcoin').show();;
+    }
+
 });
