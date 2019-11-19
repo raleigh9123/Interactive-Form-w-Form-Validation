@@ -178,15 +178,29 @@ paymentInput.change( (e) => {
 
 //Validate Form
 const isFormValid = () => {
+    //Name Validator: 1) find value of input. 2) return true if valid. 3) if invalid, provide error message
     let name = $('#name').val();
     const isValidName = (name) => {
-        return /^[a-zA-Z\s]+$/.test(name);
+        return /^[a-zA-Z]+\s*[a-zA-z\s]*$/.test(name);
+    }
+   
+    if(!isValidName(name)) {
+        $('._name').show();
+    } else {
+        $('._name').hide();
     }
     
+    //Email validator: 1) find value of input. 2) return true if valid. 3) if invalid provide error message
     let email = $('#mail').val();
     const isValidEmail = (email) => {
         return /^[^@]+@[^@.]+\.[a-z]+$/.test(email);
     }
+    if(!isValidEmail(email)) {
+        $('._email').show();
+    } else {
+        $('._email').hide();
+    }
+
 
     const isValidActivity = () => {
         //If at least one activity input is checked, return true (..or 'valid');
@@ -196,6 +210,12 @@ const isFormValid = () => {
                 return true
             }
         }
+    }
+
+    if(!isValidActivity()) {
+        $('._activity').show();
+    } else {
+        $('._activity').hide();
     }
     
     const isValidCreditCard = () => {
@@ -213,6 +233,12 @@ const isFormValid = () => {
             return true
         }
     }
+
+    if(!isValidCreditCard()) {
+        $('._credit-card').show();
+    } else {
+        $('._credit-card').hide();
+    }
     
     if(isValidName(name) && isValidEmail(email) && isValidActivity() && isValidCreditCard()) {
         return true;
@@ -220,6 +246,17 @@ const isFormValid = () => {
         return false;
     }
 }
+
+
+const nameError = '<div class="_name error">Please enter your first and last name.</div>';
+$(nameError).insertAfter('#name');
+const emailError = '<div class="_email error">Please enter a valid email address.</div>';
+$(emailError).insertAfter('#mail');
+const activityError = '<div class="_activity error">Please check at least one activity.</div>';
+$(activityError).insertBefore($('.activities h3'));
+const creditCardError = '<div class="_credit-card error">Please enter a valid credit card.</div>';
+$(creditCardError).insertAfter('#bitcoin');
+$('.error').hide();
 
 //Declare form validation function that prevents form submission
 const submitButton = $('button[type="submit"]');

@@ -149,6 +149,15 @@ option {
 	margin-top: 1.25em;
 }
 
+.error {
+	display: inline-block;
+    border: 1px solid #ffa3a3;
+    border-radius: 8px;
+    background: #ffe5e9;
+    margin: 5px 0 20px;
+    padding: 10px 25px;
+}
+
 /* ================================= 
   Helper Classes
 ==================================== */
