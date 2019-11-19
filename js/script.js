@@ -172,3 +172,61 @@ paymentInput.change( (e) => {
     }
 
 });
+
+
+//Form Validation Section
+
+//Validate Form
+const isFormValid = () => {
+    let name = $('#name').val();
+    const isValidName = (name) => {
+        return /^[a-zA-Z\s]+$/.test(name);
+    }
+    
+    let email = $('#mail').val();
+    const isValidEmail = (email) => {
+        return /^[^@]+@[^@.]+\.[a-z]+$/.test(email);
+    }
+
+    const isValidActivity = () => {
+        //If at least one activity input is checked, return true (..or 'valid');
+        let activities = $('.activities input');
+        for(i=0; i<activities.length; i++) {
+            if(activities[i].checked) {
+                return true
+            }
+        }
+    }
+    
+    const isValidCreditCard = () => {
+        let currentPaymentMethod = paymentInput.find(':selected').attr('value');
+        if(currentPaymentMethod === 'Credit Card') {
+            let cardnumber = $('#cc-num').val();
+            let zipcode = $('#zip').val();
+            let cvv = $('#cvv').val();
+
+            //Validate Credit Card, zipcode, and cvv
+            return /\d{13,16}/.test(cardnumber) &&
+            /\d{5}/.test(zipcode) &&
+            /\d{3}/.test(cvv);
+        } else {
+            return true
+        }
+    }
+    
+    if(isValidName(name) && isValidEmail(email) && isValidActivity() && isValidCreditCard()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//Declare form validation function that prevents form submission
+const submitButton = $('button[type="submit"]');
+
+//Disable form submission if inputs are invalid
+submitButton.click((e) => {
+    if(!isFormValid()) {
+        e.preventDefault();
+    }
+})
