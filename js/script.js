@@ -155,7 +155,7 @@ $('#paypal').hide();
 $('#bitcoin').hide();
 
 //Payment Method Input Change Event Handler
-paymentInput.change( (e) => {
+paymentInput.change( () => {
     let currentPaymentMethod = paymentInput.find(':selected').attr('value');
     if(currentPaymentMethod === 'Credit Card') {
         $('#credit-card').show();
@@ -176,9 +176,9 @@ paymentInput.change( (e) => {
 
 //Form Validation Section
 
-//Validate Form
+//Validate Form to ultimately return a boolean. If false, prevent form submission in event handler below. If true, allow form submission in event handler below
 const isFormValid = () => {
-    //Name Validator: 1) find value of input. 2) return true if valid. 3) if invalid, provide error message
+    //Name Validator: 1) find value of input. 2) return true if valid. 3) if invalid, show error message
     let name = $('#name').val();
     const isValidName = (name) => {
         return /^[a-zA-Z]+\s*[a-zA-z\s]*$/.test(name);
@@ -190,7 +190,7 @@ const isFormValid = () => {
         $('._name').hide();
     }
     
-    //Email validator: 1) find value of input. 2) return true if valid. 3) if invalid provide error message
+    //Email Validator: 1) find value of input. 2) return true if valid. 3) if invalid show error message
     let email = $('#mail').val();
     const isValidEmail = (email) => {
         return /^[^@]+@[^@.]+\.[a-z]+$/.test(email);
@@ -201,7 +201,7 @@ const isFormValid = () => {
         $('._email').hide();
     }
 
-
+    //Activity Validator: 1) select all checkbox inputs. 2) return true if at least one box is checked. 3) if invalid show error message
     const isValidActivity = () => {
         //If at least one activity input is checked, return true (..or 'valid');
         let activities = $('.activities input');
@@ -211,13 +211,13 @@ const isFormValid = () => {
             }
         }
     }
-
     if(!isValidActivity()) {
         $('._activity').show();
     } else {
         $('._activity').hide();
     }
     
+    //Credit Card Validator: 1) only execute if current payment method is 'Credit Card', otherwise return true. 2) return true if each of the form fields (cc#, zip, cvv) is valid. 3) if invalid show error message
     const isValidCreditCard = () => {
         let currentPaymentMethod = paymentInput.find(':selected').attr('value');
         if(currentPaymentMethod === 'Credit Card') {
@@ -233,13 +233,13 @@ const isFormValid = () => {
             return true
         }
     }
-
     if(!isValidCreditCard()) {
         $('._credit-card').show();
     } else {
         $('._credit-card').hide();
     }
     
+    //Check each validator. If ALL validators return true, return true for entire function isFormValid(), else return false
     if(isValidName(name) && isValidEmail(email) && isValidActivity() && isValidCreditCard()) {
         return true;
     } else {
@@ -247,7 +247,7 @@ const isFormValid = () => {
     }
 }
 
-
+//Create error messages for each required input and append to the DOM in each respective area. Then, hide each error message.
 const nameError = '<div class="_name error">Please enter your first and last name.</div>';
 $(nameError).insertAfter('#name');
 const emailError = '<div class="_email error">Please enter a valid email address.</div>';
@@ -255,13 +255,12 @@ $(emailError).insertAfter('#mail');
 const activityError = '<div class="_activity error">Please check at least one activity.</div>';
 $(activityError).insertBefore($('.activities h3'));
 const creditCardError = '<div class="_credit-card error">Please enter a valid credit card.</div>';
-$(creditCardError).insertAfter('#bitcoin');
+$(creditCardError).insertAfter('#exp-year');
 $('.error').hide();
 
-//Declare form validation function that prevents form submission
+//Select the submit button and add event handler to prevent or allow form submission
 const submitButton = $('button[type="submit"]');
-
-//Disable form submission if inputs are invalid
+//If all form validators return true, allow form submission. If any validator is false, false boolean is returned to event handler and default behavior is prevented
 submitButton.click((e) => {
     if(!isFormValid()) {
         e.preventDefault();

@@ -150,7 +150,7 @@ option {
 }
 
 .error {
-	display: inline-block;
+	display: table;
     border: 1px solid #ffa3a3;
     border-radius: 8px;
     background: #ffe5e9;
